@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Example</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .drag-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            margin: 20px;
+            min-height: 200px;
+            position: relative;
+        }
+
+        .drag-container span {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            cursor: grab;
+        }
+
+        #statusMessage {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Drag and Drop Example</h2>
+
+    <div class="drag-container bg-light" id="container1" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h5>Container 1</h5>
+        <span id="item1" class="badge badge-primary" draggable="true" ondragstart="drag(event)">1</span>
+        <span id="item2" class="badge badge-secondary" draggable="true" ondragstart="drag(event)">2</span>
+        <span id="item3" class="badge badge-success" draggable="true" ondragstart="drag(event)">3</span>
+    </div>
+
+    <div class="drag-container bg-light" id="container2" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h5>Container 2</h5>
+        <span id="item4" class="badge badge-danger" draggable="true" ondragstart="drag(event)">4</span>
+        <span id="item5" class="badge badge-warning" draggable="true" ondragstart="drag(event)">5</span>
+        <span id="item6" class="badge badge-info" draggable="true" ondragstart="drag(event)">6</span>
+    </div>
+
+    <textarea id="statusMessage" class="form-control" rows="3" readonly></textarea>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+        var targetContainer = ev.target.closest('.drag-container');
+        
+        // Move the dragged element to the target container
+        targetContainer.appendChild(draggedElement);
+
+        // Get container names
+        var sourceContainer = draggedElement.closest('.drag-container').querySelector('h5').innerText;
+        var targetContainerName = targetContainer.querySelector('h5').innerText;
+
+        // Update the status message
+        var statusMessage = `Moved item ${draggedElement.innerText} from ${sourceContainer} to ${targetContainerName}`;
+        $("#statusMessage").val(statusMessage);
+
+        // Log the event and data to the console
+        console.log({
+            event: ev,
+            data: {
+                item: draggedElement.innerText,
+                source: sourceContainer,
+                target: targetContainerName
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
